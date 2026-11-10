@@ -34,15 +34,9 @@ function App() {
           </div>
 
           <div>
-            <h2>CANOPY<span>STUDIO</span></h2>
+            <h2>vertical3dtech<span>STUDIO</span></h2>
             <small>PRODUCT CONFIGURATOR</small>
           </div>
-        </div>
-
-        <div className="header-center">
-          <span className="status-dot" />
-          <span>Untitled Design</span>
-          <span className="draft-label">Draft</span>
         </div>
 
         <div className="header-actions">
@@ -53,34 +47,8 @@ function App() {
         </div>
       </header>
 
-      {/* Page Heading */}
-      <section className="page-heading">
-        <div>
-          <span className="eyebrow">
-            CUSTOM PRODUCT BUILDER / CANOPY TENT
-          </span>
-
-          <h1>
-            Create your <span>perfect canopy.</span>
-          </h1>
-
-          <p>
-            Customize colors, add your branding and preview
-            your design in real time.
-          </p>
-        </div>
-
-        <div className="step-card">
-          <span>01</span>
-          <div>
-            <strong>Design Workspace</strong>
-            <small>Customize · Preview · Create</small>
-          </div>
-        </div>
-      </section>
-
       {/* Main Configurator */}
-      <div className="configurator-layout">
+      <div className="configurator-layout mt-4">
 
         {/* Left Sidebar */}
         <aside className="sidebar">
@@ -226,7 +194,7 @@ function App() {
 
       {/* Footer */}
       <footer className="app-footer">
-        <span>CANOPY STUDIO · CUSTOM CONFIGURATION</span>
+        <span>VERTICAL3DTECH · CUSTOM CONFIGURATION</span>
         <span>
           <Eye size={13} />
           Your design workspace
