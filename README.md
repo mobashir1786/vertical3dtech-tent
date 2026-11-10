@@ -1,10 +1,28 @@
-# Canopy Studio — Interactive Product Configurator
+# Canopy Studio — Custom Canopy Configurator
 
-React, TypeScript, Three.js and React Three Fiber configurator for the supplied canopy GLB models.
+Canopy Studio is a browser-based product configurator for customizing supplied canopy tent models. Choose a model, set fabric and frame colors, create artwork for individual tent panels, and review the design in a synchronized 2D editor and interactive 3D preview.
+
+**Stack:** React, TypeScript, Vite, Three.js, React Three Fiber, React Konva, and Zustand.
+
+## Features
+
+- **Product options:** Choose one of three supplied GLB tent models, side-wall options, and half-wall options.
+- **Color customization:** Set outer fabric, inner fabric, and frame colors.
+- **Panel artwork:** Design the roof, front, left, and right panels independently. Add and edit text or upload a logo/image; select elements on the canvas to move, resize, or rotate them.
+- **Live 3D preview:** Rotate and zoom the tent to review the selected model, colors, and artwork.
+- **Local persistence:** The current configuration, including uploaded image data, is saved in this browser using IndexedDB.
+- **Price summary:** Calculate an example price with an asynchronous mock pricing service.
+- **PDF summary:** Export a review PDF with the selected options, price breakdown, 3D snapshot, panel previews, and artwork element details.
+- **Cart adapter:** Pass the configuration and price to a mock Shopify cart adapter, ready to be replaced by a real integration.
+- **Responsive embed:** The app can be hosted and embedded in another site using an iframe.
+
+## Requirements
+
+- Node.js 20.19+ or 22.12+
+- npm
+- A modern browser with WebGL enabled for the 3D preview
 
 ## Run locally
-
-Requirements: Node.js 20.19+ (or 22.12+) and npm.
 
 ```bash
 npm install
@@ -12,7 +30,19 @@ npm run verify:assets
 npm run dev
 ```
 
-Validate changes with:
+Open the local URL printed by Vite. In the app, choose a tent model and options, adjust colors, then select a panel in the 2D editor to add artwork. Rotate or zoom the 3D preview to inspect the result.
+
+## Project scripts
+
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Start the Vite development server. |
+| `npm run build` | Run the TypeScript project build and create the production bundle in `dist/`. |
+| `npm run preview` | Serve the production bundle locally after building. |
+| `npm run lint` | Run ESLint. |
+| `npm run verify:assets` | Check that the supplied GLB model assets are present and valid for the project. |
+
+Before submitting changes, run:
 
 ```bash
 npm run build
@@ -20,37 +50,55 @@ npm run lint
 npm run verify:assets
 ```
 
-## Features
+## Project structure
 
-- Switch between the three supplied GLB model files; customize outer/inner fabric and frame colors.
-- Choose side-wall and half-wall options independently.
-- Design roof, front, left and right panels with text and PNG/JPEG/WebP artwork; move, resize and rotate elements.
-- See design texture and color changes in the 3D model.
-- Automatically save the current configuration, including uploaded image data, in browser IndexedDB.
-- Calculate demo pricing through a replaceable service boundary; wall options, model variants, design elements and logo uploads affect the total.
-- Export a production-summary PDF with a 3D snapshot, four 2D panel previews, artwork transforms and price breakdown.
-- Send structured configuration and price to the mock Shopify cart adapter.
-- Use the responsive app as a hosted iframe.
+```text
+public/models/                 Supplied GLB tent models
+src/
+  components/
+    customization/             Product options and color controls
+    editor2d/                  Panel artwork editor and element controls
+    preview3d/                 Three.js / React Three Fiber preview
+    summary/                   Price summary and configuration actions
+  config/                      Product, model, and option definitions
+  hooks/                       Configurator and texture-generation hooks
+  services/                    Pricing, PDF, and Shopify adapter boundaries
+  store/                       Shared configurator state
+  types/                       Configuration and artwork types
+  utils/                       Artwork texture, storage, and pricing utilities
+scripts/                       Asset verification script
+```
 
-## Architecture
+## Configuration and integrations
 
-- `src/config/` defines products, model variants and wall options.
-- `src/store/` holds reusable configurator state and persistence.
-- `src/components/editor2d/` and `src/components/preview3d/` implement the synchronized editors.
-- `src/hooks/` and `src/utils/` generate the 3D artwork texture and handle persistence.
-- `src/services/` separates pricing, Shopify cart and PDF integrations.
+Product models and selectable options are defined in `src/config/products.ts`. The Zustand store in `src/store/` manages the current design and browser persistence.
 
-Pricing and Shopify are mock services. Replace these service boundaries with server-side endpoints, real Shopify product variant IDs, validated pricing, and order-file storage before accepting purchases.
+The integrations in `src/services/` are demonstration implementations:
 
-## Model and artwork limitations
+- **Pricing:** `pricingService.ts` calculates sample USD prices in the browser. It is not a live API, quote, or production price.
+- **Shopify:** `shopifyService.ts` returns a mock cart result. Connect this adapter to your Shopify Storefront API and real product variants before accepting orders.
+- **PDF:** `pdfService.ts` generates a customer/review summary. It is not a print-ready production file.
 
-The supplied GLBs contain UVs and named fabric/frame materials. The four editor panels are packed into a model-specific artwork atlas and applied to the fabric mesh. Roof artwork is shown once on the front-facing roof facet, and front artwork is shown on the front valance; left/right artwork follows the corresponding side panels. The source files do not include a verified production dieline, so the preview remains an approximation: verify alignment against an approved model template before manufacturing. Wall selections and their demo prices are stored in the cart payload; the supplied models do not include wall geometry.
+For production, implement pricing and cart operations on trusted server-side endpoints, validate configuration data, and define how customer artwork is securely stored and passed to manufacturing.
 
-The PDF is a review/production summary, not a print-ready dieline. The displayed prices and adjustments are examples, not a vendor quote.
+## 3D artwork and model limitations
 
-## Embedding
+Artwork is rendered into a model-specific texture atlas and applied to the supplied model's fabric mesh. The roof artwork targets one front-facing roof facet; front artwork targets the front valance; left and right artwork target their corresponding mapped regions.
 
-After deploying the built app to a public HTTPS host, embed it in a storefront:
+The supplied GLBs do not include verified production dielines, and the side-wall options do not add wall geometry to the 3D models. As a result, panel placement is a visual approximation, not a manufacturing guarantee. Verify artwork against approved production templates and model UVs before printing.
+
+## Build and deploy
+
+Create and locally inspect a production build:
+
+```bash
+npm run build
+npm run preview
+```
+
+Deploy the contents of `dist/` to a static host configured to serve the app's `index.html` for the application route. The model assets are served from `public/models/` and included in the build.
+
+To embed a deployed instance:
 
 ```html
 <iframe
@@ -61,4 +109,4 @@ After deploying the built app to a public HTTPS host, embed it in a storefront:
 ></iframe>
 ```
 
-Configure host permissions and any required cross-origin policies on deployment.
+Configure the host's iframe/security policies and any required cross-origin settings for your storefront.
