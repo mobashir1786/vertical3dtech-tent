@@ -4,6 +4,8 @@ vertical3dtech Studio is a browser-based product configurator for customizing su
 
 **Stack:** React, TypeScript, Vite, Three.js, React Three Fiber, React Konva, and Zustand.
 
+**Live demo:** [Open vertical3dtech Studio](https://vertical3dtech-tent.vercel.app/)
+
 ## Features
 
 - **Product options:** Choose one of three supplied GLB tent models, side-wall options, and half-wall options.
@@ -102,7 +104,7 @@ To embed a deployed instance:
 
 ```html
 <iframe
-  src="https://YOUR-CONFIGURATOR-HOST/"
+  src="https://vertical3dtech-tent.vercel.app/"
   title="Custom canopy configurator"
   loading="lazy"
   style="width: 100%; min-height: 1000px; border: 0"
