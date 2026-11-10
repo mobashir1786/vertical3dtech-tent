@@ -53,28 +53,6 @@ function loadImage(src: string): Promise<HTMLImageElement> {
   });
 }
 
-function wrapText(
-  context: CanvasRenderingContext2D,
-  text: string,
-  maxWidth: number,
-): string[] {
-  const words = text.split(/\s+/);
-  const lines: string[] = [];
-  let line = "";
-
-  for (const word of words) {
-    const candidate = line ? `${line} ${word}` : word;
-    if (line && context.measureText(candidate).width > maxWidth) {
-      lines.push(line);
-      line = word;
-    } else {
-      line = candidate;
-    }
-  }
-  if (line) lines.push(line);
-  return lines;
-}
-
 async function renderSectionPreview(
   elements: DesignElement[],
   fabricColor: string,
@@ -102,18 +80,11 @@ async function renderSectionPreview(
 
     if (element.type === "text") {
       const fontSize = element.fontSize * PREVIEW_SCALE;
-      const lineHeight = fontSize * 1.15;
       context.fillStyle = element.fill;
       context.textAlign = "center";
       context.textBaseline = "middle";
       context.font = `${fontSize}px "${element.fontFamily}"`;
-      const lines = wrapText(context, element.text, width);
-      const maxLines = Math.max(1, Math.floor(height / lineHeight));
-      const visibleLines = lines.slice(0, maxLines);
-      visibleLines.forEach((line, index) => {
-        const lineY = (index - (visibleLines.length - 1) / 2) * lineHeight;
-        context.fillText(line, 0, lineY, width);
-      });
+      context.fillText(element.text, 0, 0, width);
     } else {
       const image = await loadImage(element.src);
       context.drawImage(image, -width / 2, -height / 2, width, height);
@@ -379,6 +350,12 @@ async function addPanelPreviewPage(
   const gap = 8;
   const cardWidth = (pageWidth - MARGIN * 2 - gap) / 2;
   const cardHeight = 91;
+  const previewBoxWidth = cardWidth - 14;
+  const previewBoxHeight = 67;
+  const previewAspectRatio = PANEL_WIDTH / PANEL_HEIGHT;
+  const previewWidth = Math.min(previewBoxWidth, previewBoxHeight * previewAspectRatio);
+  const previewHeight = previewWidth / previewAspectRatio;
+
   previews.forEach(({ section, elements, data }, index) => {
     const x = MARGIN + (index % 2) * (cardWidth + gap);
     const y = 59 + Math.floor(index / 2) * (cardHeight + gap);
@@ -391,7 +368,16 @@ async function addPanelPreviewPage(
     pdf.setFont("helvetica", "normal");
     pdf.setFontSize(7);
     pdf.text(`${elements.length} element${elements.length === 1 ? "" : "s"}`, x + cardWidth - 7, y + 10, { align: "right" });
-    pdf.addImage(data, "JPEG", x + 7, y + 16, cardWidth - 14, 67, undefined, "FAST");
+    pdf.addImage(
+      data,
+      "JPEG",
+      x + 7 + (previewBoxWidth - previewWidth) / 2,
+      y + 16 + (previewBoxHeight - previewHeight) / 2,
+      previewWidth,
+      previewHeight,
+      undefined,
+      "FAST",
+    );
   });
 
   const noteY = 59 + 2 * cardHeight + gap + 3;
