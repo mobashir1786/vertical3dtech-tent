@@ -1,6 +1,6 @@
-# Canopy Studio — Custom Canopy Configurator
+# vertical3dtech Studio — Canopy Configurator
 
-Canopy Studio is a browser-based product configurator for customizing supplied canopy tent models. Choose a model, set fabric and frame colors, create artwork for individual tent panels, and review the design in a synchronized 2D editor and interactive 3D preview.
+vertical3dtech Studio is a browser-based product configurator for customizing supplied canopy tent models. Choose a model, set fabric and frame colors, create artwork for individual tent panels, and review the design in a synchronized 2D editor and interactive 3D preview.
 
 **Stack:** React, TypeScript, Vite, Three.js, React Three Fiber, React Konva, and Zustand.
 
@@ -85,7 +85,7 @@ For production, implement pricing and cart operations on trusted server-side end
 
 Artwork is rendered into a model-specific texture atlas and applied to the supplied model's fabric mesh. The roof artwork targets one front-facing roof facet; front artwork targets the front valance; left and right artwork target their corresponding mapped regions.
 
-The supplied GLBs do not include verified production dielines, and the side-wall options do not add wall geometry to the 3D models. As a result, panel placement is a visual approximation, not a manufacturing guarantee. Verify artwork against approved production templates and model UVs before printing.
+The reference product is a 10×10 canopy, but the supplied model files are the 5.5, 6.5, and 8.8 variants listed in the configurator. No 10×10 GLB or verified production dielines were supplied, and the side-wall options do not add wall geometry to the 3D models. As a result, the available models and panel placement are a visual approximation of the reference product, not a manufacturing guarantee. Verify artwork against approved production templates and model UVs before printing.
 
 ## Build and deploy
 
